@@ -4,9 +4,7 @@ import { Currency } from '../interfaces/currencies.interface';
 const currencySchema: Schema = new Schema({
   _id: {
     type:Number,
-    default: 1,
-    unique: true,
-    index: true
+    default: 0
   },
   symbol: {
     type: String,
@@ -25,9 +23,12 @@ currencySchema.set('toJSON', {
 
 
 currencySchema.pre('save', function(next) {
-  var doc = this;
-
-  next();
+  this.constructor.find().then((result) => {
+    console.log('find',result)
+    this._id = result.length + 1;
+    console.log('this',this)
+    next();
+  });
 });
 
 const currencyModel = model<Currency & Document>('Currency', currencySchema);
