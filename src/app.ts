@@ -27,6 +27,7 @@ class App {
 
     this.initializeMiddlewares();
     this.connectToDatabase();
+    this.initializeRoutes(routes);
     this.initializeErrorHandling();
     this.initializeSwagger();
   }
@@ -65,6 +66,12 @@ class App {
     }).catch((err: any) => {
         console.log(`MongoDB connection error. Please make sure MongoDB is running. Error: ${err}`);
         process.exit(1);
+    });
+  }
+
+  private initializeRoutes(routes: Routes[]) {
+    routes.forEach(route => {
+      this.app.use('/', route.router);
     });
   }
 
