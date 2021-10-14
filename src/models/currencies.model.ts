@@ -27,7 +27,7 @@ currencySchema.pre('save', function(next) {
     if(!result.length)
       this._id = 1;
     else
-      this._id = result[0]._id+1;
+      this._id = result[0]._id + 1;
     next();
   });
 });

@@ -14,11 +14,20 @@ import { dbConnection } from './databases';
 import { Routes } from './interfaces/routes.interface';
 import errorMiddleware from './middlewares/error.middleware';
 import { logger, stream } from './utils/logger';
+import axios from 'axios';
+import * as cron from 'node-cron'
+
+import currencyPriceModel from './models/currencyPrices.model';
+import currencyModel from './models/currencies.model';
+import { Currency } from './interfaces/currencies.interface';
+import { CurrencyPrice } from './interfaces/currencyPrices.interface';
 
 class App {
   public app: express.Application;
   public port: string | number;
   public env: string;
+  public currencies = currencyModel;
+  public currencyPrices = currencyPriceModel;
 
   constructor(routes: Routes[]) {
     this.app = express();
@@ -30,6 +39,7 @@ class App {
     this.initializeRoutes(routes);
     this.initializeErrorHandling();
     this.initializeSwagger();
+    this.initializeJobs();
   }
 
   public listen() {
@@ -95,6 +105,25 @@ class App {
     this.app.use(errorMiddleware);
   }
 
+  private initializeJobs(){
+    const task = cron.schedule('0 0 */1 * * *', async () => {
+      const currencies: Currency[] = await this.currencies.find();
+        await Promise.all( currencies.map(async({symbol}) => {
+          try {
+            const {data:{price}}:any = await axios.get(`https://api.binance.com/api/v3/avgPrice?symbol=${symbol}`);
+            const createCurrencyData: CurrencyPrice = await this.currencyPrices.create({ price, symbol });
+          }catch (error) {
+            console.log(error);
+          }
+        })
+
+        )
+    });
+
+
+
+    task.start();
+  }
 }
 
 export default App;
