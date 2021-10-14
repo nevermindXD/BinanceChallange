@@ -23,10 +23,11 @@ currencySchema.set('toJSON', {
 
 
 currencySchema.pre('save', function(next) {
-  this.constructor.find().then((result) => {
-    console.log('find',result)
-    this._id = result.length + 1;
-    console.log('this',this)
+  this.constructor.find().sort('-_id').then((result) => {
+    if(!result.length)
+      this._id = 1;
+    else
+      this._id = result[0]._id+1;
     next();
   });
 });
