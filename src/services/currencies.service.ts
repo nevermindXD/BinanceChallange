@@ -13,7 +13,7 @@ class CurrencyService {
   }
 
   public async createCurrency(currencyData: CreateCurrencyDto): Promise<Currency> {
-    if (isEmpty(currencyData)) throw new HttpException(400, "You're not userData");
+    if (isEmpty(currencyData)) throw new HttpException(400, "You're not currencyData");
 
     const findCurrency: Currency = await this.currencies.findOne({ symbol: currencyData.symbol });
     if (findCurrency) throw new HttpException(409, `${currencyData.symbol} already exists`);

@@ -10,7 +10,7 @@ class CurrenciesController {
     try {
       const findAllCurrenciesData: Currency[] = await this.currencyService.findAllCurrency();
 
-      res.status(200).json({ data: findAllCurrenciesData, message: 'findAllCurrency' });
+      res.status(200).json({ results: findAllCurrenciesData });
     } catch (error) {
       next(error);
     }
