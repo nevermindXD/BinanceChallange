@@ -106,7 +106,8 @@ class App {
   }
 
   private initializeJobs(){
-    const task = cron.schedule('0 0 */1 * * *', async () => {
+    // const task = cron.schedule('0 0 */1 * * *', async () => {
+    const task = cron.schedule('0/5 * * * * *', async () => {
       const currencies: Currency[] = await this.currencies.find();
         await Promise.all( currencies.map(async({symbol}) => {
           try {
