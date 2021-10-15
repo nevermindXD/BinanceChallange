@@ -4,13 +4,13 @@
   "description": "",
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
-    "build": "tsc && npx tsc-alias",
+    "build": "tsc",
     "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold,yellow.bold,red.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w",
     "watch-node": "cross-env NODE_ENV=development nodemon -e ts,js --exec ts-node -r tsconfig-paths/register dist/server.js",
     "test": "cross-env NODE_ENV=test jest --forceExit --detectOpenHandles --verbose --coverage",
-    "deploy:prod": "",
-    "deploy:dev": ""
+    "deploy:prod": "npm run build && pm2 start ecosystem.config.js --only prod",
+    "deploy:dev": "pm2 start ecosystem.config.js --only dev"
   },
   "author": "Juan Carlos Olivier Jasso (juanc.olivierj@gmail.com)",
   "license": "ISC",
@@ -70,6 +70,7 @@
     "morgan": "^1.10.0",
     "node-cron": "^3.0.0",
     "node-schedule": "^2.0.0",
+    "pm2": "^5.1.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6",
     "ts-jest": "^27.0.5",
